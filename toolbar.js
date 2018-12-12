@@ -2,7 +2,7 @@ import {bind} from './core/index.js'
 class ToolBar extends HTMLElement {
     constructor() {
         super();
-        this._template = document.getElementById('toolbar');
+        this._template = document.getElementById('template');
         this.appendChild(bind(this._template,this));
     }
     get textPlaceHolder(){
