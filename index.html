@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="preconect" href="https://fonts.gstatic.com">
+
+    <link rel="preload" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,900&subset=latin-ext"
+        as="style">
+
+    <!--
+        <script type="module" async src="toolbar.js"></script>
+
+    -->
+
+
+</head>
+
+<body>
+    <style>
+        * {
+                            margin: 0px;
+                            padding: 0px;
+                            box-sizing: border-box;
+                        }
+    </style>
+
+    <template id="template">
+        <style>
+            .toolbar {
+                            display: grid;
+                            grid-template-columns: 5% 50% auto;
+                            background-color: rgb(105, 193, 135);
+                            color: rgb(255, 255, 255);
+                            align-items: center;
+                            min-height: 64px;
+                            font-family: 'Open Sans',Helvetica,sans-serif;            
+                        }
+                        .toolbar-search{
+                            border:none;
+                            width: 65%;
+                            padding: 0 20px;
+                            min-height: 40px;
+                        }
+                        .toolbar-search:focus{
+                            outline: none;
+                        }
+                        .toolbar-icon {
+                            height: 35px;
+                            width: 35px;
+                            margin: 0 20px;
+                        }
+                        .toolbar-menu{
+                            display: flex;
+                            color: white;
+                            text-decoration: none;
+                            margin-left: 20%;
+                          
+                        }
+                        .toolbar-menu-item{
+                            color: inherit;
+                            text-decoration: inherit;
+                            margin-right: 30px;
+                            
+                        }
+            </style>
+        <div class="toolbar">
+            <a href="">
+                <img class="toolbar-icon" src="assets/img/Paladin_LOGO_white_no_text.png" alt="paladin">
+            </a>
+            <input class="toolbar-search" type="text" placeholder="{textPlaceHolder}" autofocus>
+            <div class="toolbar-menu">
+                <a class="toolbar-menu-item" href="#">Noleglia</a>
+                <a class="toolbar-menu-item" href="">Buono regalo</a>
+                <a class="toolbar-menu-item" href="">About</a>
+                <a class="toolbar-menu-item" href="">Accedi</a>
+                <a class="toolbar-menu-item" href="">Iscriviti</a>
+            </div>
+
+        </div>
+    </template>
+
+
+    <!--
+        <pld-toolbar></pld-toolbar>
+    -->
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,900&subset=latin-ext">
+</body>
+
+</html>
