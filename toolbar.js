@@ -4,8 +4,8 @@ class ToolBar extends HTMLElement {
         super();
         this._template = document.getElementById('template');
         const node = bind(this._template,this);
-        debugger;
-        this.appendChild(node);
+        debugger; // MIRAR EL NETWORK
+        this.appendChild(node); // TODO: meter los hijos y no el body entero
     }
     get textPlaceHolder(){
         return 'Search';
