@@ -3,7 +3,9 @@ class ToolBar extends HTMLElement {
     constructor() {
         super();
         this._template = document.getElementById('template');
-        this.appendChild(bind(this._template,this));
+        const node = bind(this._template,this);
+        debugger;
+        this.appendChild(node);
     }
     get textPlaceHolder(){
         return 'Search';

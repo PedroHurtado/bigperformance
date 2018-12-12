@@ -122,10 +122,16 @@ function bindAttributes(node, data) {
 }
 
 export function bind(template, data) {
-    let clone = document.importNode(template.content, true);
+    let clone = template.content.cloneNode(true);
+    let doc = new Document;
+    let body = doc.createElement('body');
+    body.appendChild(clone);
+    doc.appendChild(body);
+    let img = doc.querySelector('img');
+    window.alert(img.src);
     let templates = [];
     let predicate = (node) => node.localName !== 'style' && node.localName !== 'script';
-    for (let node of childNodes(clone, predicate)) {
+    for (let node of childNodes(body, predicate)) {
         if (node.nodeType === 3) { //text
             let text = interpolate(node.textContent)(data);
             if (text !== node.textContent) {
@@ -142,6 +148,6 @@ export function bind(template, data) {
         }
     }
     templates.forEach(tpl => tpl.remove());
-    return clone;
+    return body;
 }
 
