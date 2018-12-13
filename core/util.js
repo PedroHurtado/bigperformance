@@ -99,8 +99,8 @@ function upgrade(obj) {
     }
     return obj;
 }
-function getPropertyDescriptor(obj, property) {
-    return Object.getOwnPropertyDescriptor(Object.getPrototypeOf(obj), property);
+function getPropertyDescriptor(prototype, property) {
+    return Object.getOwnPropertyDescriptor(prototype, property);
 }
 function isRepeat(node) {
     return node.localName === 'template' && node.getAttribute('is') === 'pld-repeat';
@@ -112,17 +112,17 @@ function isTemplate(node) {
     return isRepeat(node) || isIf(node);
 }
 function bindAttributes(node, data) {
+    let prototype = Object.getPrototypeOf(node);
     for (let i = 0; i < node.attributes.length; i++) {
-        let value = node.attributes[i].value;
-        let name = node.attributes[i].name;
+        let {name,value} = node.attributes[i];
         let obj = interpolate(value)(data);
-        if (getPropertyDescriptor(node, name)) {
+        if (getPropertyDescriptor(prototype, name)) {
             if (obj !== node[name]) {
                 node[name] = obj;
             }
         }
         else {
-            if (node.attributes[i].value !== obj) {
+            if (value !== obj) {
                 node.attributes[i].value = obj;
             }
         }
@@ -136,8 +136,9 @@ export function bind(template, data) {
     let nodes = Array.from(childNodes(clone, predicate));
     for (let node of nodes) {
         if (node.nodeType === 3) { //text
-            let text = interpolate(node.textContent)(data);
-            if (text !== node.textContent) {
+            let oldText =node.textContent;
+            let text = interpolate(oldText)(data);
+            if (text !== oldText) {
                 node.textContent = text;
             }
         } else {
