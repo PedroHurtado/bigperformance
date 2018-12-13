@@ -11,10 +11,10 @@
     <link rel="preload" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,900&subset=latin-ext"
         as="style">
 
- 
+
+        <script type="module" async src="foo.js"></script>
         <script type="module" async src="toolbar.js"></script>
 
-   
 
 
 </head>
@@ -37,7 +37,7 @@
                             color: rgb(255, 255, 255);
                             align-items: center;
                             min-height: 64px;
-                            font-family: 'Open Sans',Helvetica,sans-serif;            
+                            font-family: 'Open Sans',Helvetica,sans-serif;
                         }
                         .toolbar-search{
                             border:none;
@@ -58,13 +58,13 @@
                             color: white;
                             text-decoration: none;
                             margin-left: 20%;
-                          
+
                         }
                         .toolbar-menu-item{
                             color: inherit;
                             text-decoration: inherit;
                             margin-right: 30px;
-                            
+
                         }
             </style>
         <div class="toolbar">
@@ -79,14 +79,14 @@
                 <a class="toolbar-menu-item" href="">Accedi</a>
                 <a class="toolbar-menu-item" href="">Iscriviti</a>
             </div>
-
+            <x-foo placeholder="{textPlaceHolder}"></x-foo>
         </div>
     </template>
 
 
-   
+
         <pld-toolbar></pld-toolbar>
-  
+
 
 
 

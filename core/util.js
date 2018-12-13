@@ -92,6 +92,11 @@ function* childNodes(parent, filter) {
 }
 
 function getPropertyDescriptor(obj, property) {
+    if(obj.tagName.includes('-')){
+        // Si es un customElement hacerle un update manualmente
+        const proto = window.customElements.get(obj.tagName).prototype;
+        Reflect.setPrototypeOf(obj, proto);
+    }
     return Object.getOwnPropertyDescriptor(Object.getPrototypeOf(obj), property);
 }
 function isRepeat(node) {
