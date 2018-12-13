@@ -133,7 +133,8 @@ export function bind(template, data) {
     let clone = template.content.cloneNode(true);
     let templates = [];
     let predicate = (node) => node.localName !== 'style' && node.localName !== 'script';
-    for (let node of [...childNodes(clone, predicate)]) {
+    let nodes = Array.from(childNodes(clone, predicate));
+    for (let node of nodes) {
         if (node.nodeType === 3) { //text
             let text = interpolate(node.textContent)(data);
             if (text !== node.textContent) {
