@@ -94,6 +94,9 @@ function* childNodes(parent, filter) {
 function getPropertyDescriptor(obj, property) {
     if(obj.tagName.includes('-')){
         // Si es un customElement hacerle un update manualmente
+        // se podria comprobar que la propiedad exista en el proto
+        // pero al hacer el update tambien nos aseguramos de que
+        // se utilicen los setters
         const proto = window.customElements.get(obj.tagName).prototype;
         Reflect.setPrototypeOf(obj, proto);
     }
