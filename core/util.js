@@ -90,16 +90,24 @@ function* childNodes(parent, filter) {
         }
     }
 }
+function upgrade(obj) {
+    if (obj.localName.includes('-') || obj.hasAttribute('is')) {
+        // Si es un customElement hacerle un upgrade manualmente
+        // para ello su ownerDocument debe ser el del window donde
+        // se han registrado los CE.
 
-function getPropertyDescriptor(obj, property) {
-    if(obj.tagName.includes('-')){
-        // Si es un customElement hacerle un update manualmente
-        // se podria comprobar que la propiedad exista en el proto
-        // pero al hacer el update tambien nos aseguramos de que
-        // se utilicen los setters
-        const proto = window.customElements.get(obj.tagName).prototype;
-        Reflect.setPrototypeOf(obj, proto);
+        // También se podría hacer esto pero no se invocaría el ctor ni los setters
+        // const proto = window.customElements.get(obj.localName).prototype;
+        // Reflect.setPrototypeOf(obj, proto);
+
+        let node = document.importNode(obj);
+        window.customElements.upgrade(node);
+        obj.replaceWith(node);
+        return node;
     }
+    return obj;
+}
+function getPropertyDescriptor(obj, property) {
     return Object.getOwnPropertyDescriptor(Object.getPrototypeOf(obj), property);
 }
 function isRepeat(node) {
@@ -108,7 +116,7 @@ function isRepeat(node) {
 function isIf(node) {
     return node.localName === 'template' && node.getAttribute('is') === 'pld-if';
 }
-function isTemplate(node){
+function isTemplate(node) {
     return isRepeat(node) || isIf(node);
 }
 function bindAttributes(node, data) {
@@ -131,21 +139,22 @@ function bindAttributes(node, data) {
 
 export function bind(template, data) {
     let clone = template.content.cloneNode(true);
-    let doc = new Document;
-    let body = doc.createElement('body');
-    body.appendChild(clone);
-    doc.appendChild(body);
-    let img = doc.querySelector('img');
-    window.alert(img.src);
+    // let doc = new Document;
+    // let body = doc.createElement('body');
+    // body.appendChild(clone);
+    // doc.appendChild(body);
+    // let img = doc.querySelector('img');
+    // window.alert(img.src);
     let templates = [];
     let predicate = (node) => node.localName !== 'style' && node.localName !== 'script';
-    for (let node of childNodes(body, predicate)) {
+    for (let node of childNodes(clone, predicate)) {
         if (node.nodeType === 3) { //text
             let text = interpolate(node.textContent)(data);
             if (text !== node.textContent) {
                 node.textContent = text;
             }
         } else {
+            node = upgrade(node);
             bindAttributes(node, data);
             if (isTemplate(node)) {
                 let templateChild = node.clone();
@@ -156,6 +165,6 @@ export function bind(template, data) {
         }
     }
     templates.forEach(tpl => tpl.remove());
-    return body;
+    return clone;
 }
 
