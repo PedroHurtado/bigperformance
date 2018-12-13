@@ -11,9 +11,7 @@
     <link rel="preload" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,900&subset=latin-ext"
         as="style">
 
-
-        <script type="module"  src="foo.js"></script>
-        <script type="module"  src="toolbar.js"></script>
+    <script type="module" async src="toolbar.js"></script>
 
 
 
@@ -68,9 +66,11 @@
                         }
             </style>
         <div class="toolbar">
-            <a href="">
-                <img class="toolbar-icon" src="assets/img/Paladin_LOGO_white_no_text.png" alt="paladin">
-            </a>
+            <template is="pld-if" expression="{expression}">
+                <a href="">
+                    <img class="toolbar-icon" src="{image}" alt="paladin">
+                </a>
+            </template>
             <input class="toolbar-search" type="text" placeholder="{textPlaceHolder}" autofocus>
             <div class="toolbar-menu">
                 <a class="toolbar-menu-item" href="#">Noleglia</a>
@@ -79,13 +79,12 @@
                 <a class="toolbar-menu-item" href="">Accedi</a>
                 <a class="toolbar-menu-item" href="">Iscriviti</a>
             </div>
-            <x-foo placeholder="{textPlaceHolder}"></x-foo>
         </div>
     </template>
 
 
 
-        <pld-toolbar></pld-toolbar>
+    <pld-toolbar></pld-toolbar>
 
 
 

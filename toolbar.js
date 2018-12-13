@@ -4,7 +4,6 @@ class ToolBar extends HTMLElement {
         super();
         this._template = document.getElementById('template');
         const node = bind(this._template,this);
-        debugger; // MIRAR EL NETWORK
         this.appendChild(node); // TODO: meter los hijos y no el body entero
     }
     get textPlaceHolder(){
@@ -13,8 +12,11 @@ class ToolBar extends HTMLElement {
     get collection(){
         return [{id:1},{id:2},{id:3}];
     }
+    get image(){
+        return 'assets/img/Paladin_LOGO_white_no_text.png';
+    }
     get expression(){
-        return false;
+        return true;
     }
 }
 

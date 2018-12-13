@@ -92,15 +92,7 @@ function* childNodes(parent, filter) {
 }
 function upgrade(obj) {
     if (obj.localName.includes('-') || obj.hasAttribute('is')) {
-        // Si es un customElement hacerle un upgrade manualmente
-        // para ello su ownerDocument debe ser el del window donde
-        // se han registrado los CE.
-
-        // También se podría hacer esto pero no se invocaría el ctor ni los setters
-        // const proto = window.customElements.get(obj.localName).prototype;
-        // Reflect.setPrototypeOf(obj, proto);
-
-        let node = document.importNode(obj);
+        let node = document.importNode(obj, true);
         window.customElements.upgrade(node);
         obj.replaceWith(node);
         return node;
@@ -139,15 +131,9 @@ function bindAttributes(node, data) {
 
 export function bind(template, data) {
     let clone = template.content.cloneNode(true);
-    // let doc = new Document;
-    // let body = doc.createElement('body');
-    // body.appendChild(clone);
-    // doc.appendChild(body);
-    // let img = doc.querySelector('img');
-    // window.alert(img.src);
     let templates = [];
     let predicate = (node) => node.localName !== 'style' && node.localName !== 'script';
-    for (let node of childNodes(clone, predicate)) {
+    for (let node of [...childNodes(clone, predicate)]) {
         if (node.nodeType === 3) { //text
             let text = interpolate(node.textContent)(data);
             if (text !== node.textContent) {
