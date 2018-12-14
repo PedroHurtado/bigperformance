@@ -10,7 +10,7 @@ function interpolate(text) {
         singleExpression;
 
     if (!hasExpression(text)) {
-        return function () { return text };
+        return Object.assign(function () { return text }, { expressions: undefined });
     }
     while (index < textLength) {
         if (((startIndex = text.indexOf('{', index)) !== -1) &&
@@ -30,7 +30,7 @@ function interpolate(text) {
             break;
         }
     }
-    return function (data) {
+    return Object.assign(function (data) {
 
         function getData(expresion, obj) {
             let expresionArray = expresion.split('.');
@@ -70,23 +70,33 @@ function interpolate(text) {
             return textConcat.join('');
         }
 
-    }
+    }, { expressions: expressions })
 }
 
 function hasExpression(text) {
     return text && text.indexOf('{') > -1;
 }
-
-function* childNodes(parent, filter) {
+function padLeft(id) {
+    var str = "" + id
+    var pad = "00"
+    return pad.substring(0, pad.length - str.length) + str
+}
+function createId(parent, id) {
+    return `${parent}.${padLeft(id)}`
+}
+function* childNodes(parent, filter, index) {
+    let i = 1;
     for (let child = parent.firstChild; child;
         child = child.nextSibling) {
         if (filter(child)) {
             if (child.childNodes.length > 0) {
-                yield child;
-                yield* childNodes(child, filter)
+                let id = createId(index, i);
+                yield { id, node: child };
+                yield* childNodes(child, filter, id)
             } else {
-                yield child;
+                yield { id: createId(index, i), node: child };
             }
+            i++;
         }
     }
 }
@@ -111,18 +121,19 @@ function isIf(node) {
 function isTemplate(node) {
     return isRepeat(node) || isIf(node);
 }
-function bindAttributes(node, data) {
+function bindAttributes(binding, data) {
+    let {id,node} =binding;
     let prototype = Object.getPrototypeOf(node);
     for (let i = 0; i < node.attributes.length; i++) {
-        let {name,value} = node.attributes[i];
-        let obj = interpolate(value)(data);
-        if (getPropertyDescriptor(prototype, name)) {
-            if (obj !== node[name]) {
+        let { name, value } = node.attributes[i];
+        let _interpolate = interpolate(value);
+        if (_interpolate.expressions) {
+            binding.expressions = _interpolate.expressions;
+            let obj = _interpolate(data);
+            if (getPropertyDescriptor(prototype, name)) {
                 node[name] = obj;
             }
-        }
-        else {
-            if (value !== obj) {
+            else {
                 node.attributes[i].value = obj;
             }
         }
@@ -133,17 +144,20 @@ export function bind(template, data) {
     let clone = template.content.cloneNode(true);
     let templates = [];
     let predicate = (node) => node.localName !== 'style' && node.localName !== 'script';
-    let nodes = Array.from(childNodes(clone, predicate));
-    for (let node of nodes) {
+    let nodes = Array.from(childNodes(clone, predicate, '01'));
+    for (let binding of nodes) {
+        let {id,node}=binding;
         if (node.nodeType === 3) { //text
-            let oldText =node.textContent;
-            let text = interpolate(oldText)(data);
-            if (text !== oldText) {
-                node.textContent = text;
+            let text = node.textContent;
+            let _interpolate = interpolate(text);
+            if (_interpolate.expressions) {
+                binding.expressions = _interpolate.expressions;
+                node.textContent = _interpolate(data);
             }
         } else {
             node = upgrade(node);
-            bindAttributes(node, data);
+            binding.node = node;
+            bindAttributes(binding, data);
             if (isTemplate(node)) {
                 let templateChild = node.clone();
                 let bindTemplate = bind(templateChild, data);
